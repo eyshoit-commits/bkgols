@@ -1,0 +1,19 @@
+[package]
+name = "bkg-plugin-logger"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+description = "Example logging plugin for the BKG runtime"
+
+[lib]
+name = "bkg_plugin_logger"
+crate-type = ["cdylib"]
+
+[dependencies]
+async-trait = "0.1"
+tracing = "0.1"
+serde_json = "1"
+
+[dependencies.bkg-plugin-api]
+path = "../../crates/plugin-api"
+features = []

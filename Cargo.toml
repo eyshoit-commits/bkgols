@@ -1,0 +1,7 @@
+[workspace]
+members = [
+    "crates/bkg",
+    "crates/plugin-api",
+    "plugins/logger"
+]
+resolver = "2"
