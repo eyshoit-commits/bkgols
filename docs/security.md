@@ -1,32 +1,29 @@
-# Sicherheitsrichtlinie
+# BKG Security Policy
 
-## 1. Überblick
-Dieses Dokument beschreibt die Sicherheitsrichtlinien der BKG-Plattform, einschließlich Governance, Schutzmaßnahmen und Audit-Anforderungen für Admin-CAVEs und Namespace-CAVEs.
+## 1. Overview
+This document summarizes the security posture, mandatory controls, and validation workflows that govern the BKG platform.
 
-## 2. Governance-Grundsätze
-- **Verantwortlichkeiten:** Admin-CAVEs sind für Modell-Hosting, Schlüsselverwaltung und Replika-Koordination zuständig.
-- **Zugriffsmodell:** RBAC gemäß README v1.8.2 (Admin, Namespace, Session, Model-Access).
-- **Compliance:** Alle Änderungen benötigen SBOM-, SLSA- und cosign-Signaturen gemäß CI-Richtlinien.
-
-## 3. Schutzmaßnahmen
-- **Sandbox-Isolation:** Nutzung von Linux-Namespaces, cgroups v2, Seccomp und Overlay-Dateisystemen.
-- **Schlüsselverwaltung:** TTLs und Rotationsrichtlinien entsprechend Abschnitt "Schlüssel-Lifecycle" der README.
-- **Telemetry:** OpenTelemetry mit konfigurierbarer Sampling-Rate über `CAVE_OTEL_SAMPLING_RATE`.
-
-## 4. Auditing & Logging
-- **Audit-Logs:** Append-only JSON-Lines, signiert; Zugriff über Admin-CAVE Audit-UI.
-- **Webhook-Überwachung:** Rotation-Webhooks sind HMAC-signiert und werden im Audit-Log erfasst.
-
-## 5. CI- und Testanforderungen
-- **OpenAPI-Validierung:** `make api-schema` + `openapi-cli validate`.
-- **cave.yaml-Validierung:** `ajv validate -s schema/cave.schema.json -d cave.yaml`.
-- **Supply-Chain:** `make sbom`, `make slsa`, `cosign sign-blob` für SBOM-Artefakte.
-
-## 22. Threat-Matrix
-Die Threat-Matrix dokumentiert Angriffsvektoren für Sandbox, Admin-CAVE, P2P und Supply-Chain. Für jede Bedrohung sind Auswirkungen, Eintrittswahrscheinlichkeiten und Gegenmaßnahmen hinterlegt.
+## 2. Threat Matrix (§22)
+The Threat Matrix enumerates adversarial scenarios across the CAVE runtime, Admin-CAVE hosting surface, telemetry plane, and supply chain. Each threat entry captures mitigations, detection hooks, and ownership for rapid response.
 
 Die Threat-Matrix in §22 ist verpflichtend CI-geprüft (via pytest security/).
 
-## 23. Anhänge
-- **Glossar:** Siehe README Appendix A.
-- **Verweise:** docs/architecture.md, docs/env.md, schema/cave.schema.json.
+## 3. Validation & Continuous Compliance
+- **CI Enforcement:** Security regression suites must be executed via `pytest security/` and form part of the required CI gating jobs.
+- **Documentation Sync:** Any update to the Threat Matrix requires a corresponding update to mitigation owners and automation coverage.
+- **Supply Chain Integrity:** SBOM and SLSA provenance artifacts must be generated (`make sbom`, `make slsa`) and the SBOM signed (`cosign sign-blob`).
+
+## 4. Incident Response Hooks
+- **Audit Logging:** Append-only, signed JSON Lines logs must be streamed to the compliance archive with a 30-day minimum retention policy.
+- **Rotation Webhooks:** Credential rotation events must be HMAC signed and replay protected; alerts are routed to the security operations queue.
+- **Telemetry Sampling:** Operators may tune `CAVE_OTEL_SAMPLING_RATE` to adjust trace volume without disabling telemetry, ensuring investigations retain relevant signals.
+
+## 5. Secure Development Requirements
+- **Sandbox Hardening:** Enforce seccomp profiles, namespace isolation, and cgroup limits as outlined in the Phase-0 gating criteria.
+- **Key Governance:** Follow TTL and rotation rules for Admin, Namespace, Session, and Model-Access keys, including webhook notifications.
+- **Configuration Hygiene:** Sensitive environment variables (e.g., `BKG_API_KEY`, `BKG_DB_DSN`, TLS materials) must be sourced from managed secret stores.
+
+## 6. References
+- `README.md` — Canonical system prompt and implementation policy.
+- `docs/env.md` — Environment variable reference and sensitivity flags.
+- `schema/cave.schema.json` — Validation schema for `cave.yaml` deployments.
