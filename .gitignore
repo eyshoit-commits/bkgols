@@ -1,0 +1,4 @@
+target/
+**/target/
+plugins/dist/*
+!plugins/dist/.gitkeep
