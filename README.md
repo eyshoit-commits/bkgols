@@ -326,11 +326,12 @@ SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
 26. NARRATIVE — WAS ICH GEÄNDERT HABE UND WIE ES WEITERGEHT
 -----------------------------------------------------------------------
-Ich habe die README auf Version v1.8.2 aktualisiert und die produktiven Feinschliffe integriert: die Telemetry‑Sampling‑Policy (`CAVE_OTEL_SAMPLING_RATE`) ist aufgenommen, `/healthz` und `/metrics` sind in den API‑Contracts als Pflichtendpunkte verankert, der Rotation‑Webhook ist spezifiziert, die RBAC‑Tabelle führt `rate_limit_default` für Gateway‑Konfigurationen, und das SBOM/SLSA‑Beispiel mit `cosign sign-blob` dokumentiert die Signaturpflicht. Parallel liegen die geforderten Begleitdokumente bereits vor: `docs/FEATURE_ORIGINS.md` (Template + initiale Einträge), `docs/architecture.md` (Systemübersicht mit Sequenzdiagramm‑Platzhaltern), `docs/env.md` (Umgebungsvariablenreferenz) sowie `schema/cave.schema.json` (validiertes Schema für `cave.yaml`).
+Ich habe die README auf Version v1.8.2 aktualisiert und die produktiven Feinschliffe integriert: die Telemetry‑Sampling‑Policy (`CAVE_OTEL_SAMPLING_RATE`) ist aufgenommen, `/healthz` und `/metrics` sind in den API‑Contracts als Pflichtendpunkte verankert, der Rotation‑Webhook ist spezifiziert, die RBAC‑Tabelle führt `rate_limit_default` für Gateway‑Konfigurationen, und das SBOM/SLSA‑Beispiel mit `cosign sign-blob` dokumentiert die Signaturpflicht. Im Repository liegen derzeit `docs/FEATURE_ORIGINS.md` (Template mit ersten Entwürfen), `docs/architecture.md` (Systemübersicht inkl. Mermaid‑Sequenzen), `docs/env.md` (Umgebungsvariablenreferenz) sowie `schema/cave.schema.json` (aktuelles `cave.yaml`‑Schema).
 
-Nächste Schritte (verbindlich):
-- `docs/security.md` finalisieren und den CI‑Hinweis zur verpflichtenden Threat‑Matrix‑Prüfung (§22, `pytest security/`) aufnehmen.
-- Test‑Matrix‑Referenzen mit automatisierten CI‑Jobs unterlegen (SBOM/SLSA‑Workflow inklusive `cosign sign-blob` Ausführung).
-- Release‑Prozessdokumentation um die konkreten Artefakt‑Speicherorte und Signaturpfade ergänzen.
+Nächste Schritte (verbindlich, um die README‑Vorgaben zu erfüllen):
+- `docs/security.md` anlegen und um die in §22 geforderte Threat‑Matrix samt CI‑Hinweis (`pytest security/`) ergänzen.
+- Fehlende Pflicht‑Dokumente aus §19 erstellen bzw. importieren (`docs/api.md`, `docs/cli.md`, `docs/deployment.md`, `docs/operations.md`, `docs/testing.md`, `docs/governance.md`, `docs/compatibility.md`) und jeweils auf den aktuellen Stand bringen.
+- `docs/FEATURE_ORIGINS.md` von Draft‑Einträgen auf vollständige, verifizierte Einträge mit Commits/PR‑Verweisen und Reviewer‑Signoff erweitern.
+- Test‑Matrix‑Referenzen mit automatisierten CI‑Jobs unterlegen (SBOM/SLSA‑Workflow inklusive `cosign sign-blob` Ausführung) und die Release‑Prozessdokumentation um Artefakt‑Speicherorte sowie Signaturpfade ausformulieren.
 
 Ende README v1.8.2 — verbindlicher System‑Prompt & Implementationsleitfaden.
