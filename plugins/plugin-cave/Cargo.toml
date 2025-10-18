@@ -1,0 +1,10 @@
+[package]
+name = "plugin-cave"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+async-trait.workspace = true
+tracing.workspace = true
+bkg-core = { path = "../../crates/bkg-core" }
