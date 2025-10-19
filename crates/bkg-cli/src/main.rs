@@ -18,6 +18,7 @@ struct Cli {
 #[derive(Subcommand, Debug)]
 enum Commands {
     /// Sandbox lifecycle commands
+    #[command(subcommand)]
     Sandboxes(SandboxCommands),
     /// Display health information
     Health,
