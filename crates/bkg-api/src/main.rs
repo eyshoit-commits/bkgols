@@ -15,8 +15,7 @@ use bkg_core::{
 };
 use prometheus::{Encoder, IntGauge, Registry, TextEncoder};
 use serde::{Deserialize, Serialize};
-use tokio::signal;
-use tower_http::trace::TraceLayer;
+use tokio::net::TcpListener;
 use tracing::info;
 use tracing_subscriber::EnvFilter;
 use uuid::Uuid;
@@ -48,16 +47,14 @@ async fn main() -> Result<()> {
         .route("/api/v1/sandboxes/:id/stop", post(stop_sandbox))
         .route("/api/v1/sandboxes/:id/exec", post(exec_sandbox))
         .route("/api/v1/sandboxes/:id/status", get(status_sandbox))
-        .with_state(app_state)
-        .layer(TraceLayer::new_for_http());
+        .with_state(app_state);
 
     let addr: SocketAddr = "0.0.0.0:8080".parse()?;
     info!(%addr, "starting BKG API server");
 
-    axum::Server::bind(&addr)
-        .serve(app.into_make_service())
-        .with_graceful_shutdown(shutdown_signal())
-        .await?;
+    let listener = TcpListener::bind(addr).await?;
+
+    axum::serve(listener, app).await?;
 
     Ok(())
 }
@@ -113,30 +110,6 @@ impl AppMetrics {
 
     fn gather(&self) -> Vec<prometheus::proto::MetricFamily> {
         self.registry.gather()
-    }
-}
-
-async fn shutdown_signal() {
-    let ctrl_c = async {
-        signal::ctrl_c()
-            .await
-            .expect("failed to install Ctrl+C handler");
-    };
-
-    #[cfg(unix)]
-    let terminate = async {
-        use tokio::signal::unix::{signal, SignalKind};
-        let mut sigterm =
-            signal(SignalKind::terminate()).expect("failed to install signal handler");
-        sigterm.recv().await;
-    };
-
-    #[cfg(not(unix))]
-    let terminate = std::future::pending::<()>();
-
-    tokio::select! {
-        _ = ctrl_c => {},
-        _ = terminate => {},
     }
 }
 

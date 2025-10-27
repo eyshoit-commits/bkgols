@@ -14,6 +14,6 @@ tracing.workspace = true
 tracing-subscriber.workspace = true
 bkg-core = { path = "../bkg-core" }
 prometheus.workspace = true
-tower.workspace = true
-tower-http.workspace = true
 uuid.workspace = true
+plugin-cave = { path = "../../plugins/plugin-cave" }
+plugin-p2p = { path = "../../plugins/plugin-p2p" }

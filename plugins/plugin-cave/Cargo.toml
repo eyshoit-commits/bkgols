@@ -8,3 +8,5 @@ license.workspace = true
 async-trait.workspace = true
 tracing.workspace = true
 bkg-core = { path = "../../crates/bkg-core" }
+parking_lot.workspace = true
+chrono.workspace = true

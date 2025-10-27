@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::fmt;
 use std::sync::Arc;
 
 use async_trait::async_trait;
@@ -49,7 +50,7 @@ pub trait CavePlugin: Send + Sync {
     async fn shutdown(&self) -> PluginResult<()>;
 }
 
-#[derive(Debug, Clone)]
+#[derive(Clone)]
 pub struct PluginContext {
     runtime_registry: RuntimeRegistry,
 }
@@ -61,6 +62,14 @@ impl PluginContext {
 
     pub fn runtime_registry(&self) -> RuntimeRegistry {
         self.runtime_registry.clone()
+    }
+}
+
+impl fmt::Debug for PluginContext {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("PluginContext")
+            .field("runtime_registry", &"<opaque>")
+            .finish()
     }
 }
 
@@ -179,6 +188,16 @@ pub trait SandboxRuntime: Send + Sync {
 #[derive(Clone, Default)]
 pub struct RuntimeRegistry {
     runtimes: Arc<RwLock<HashMap<String, Arc<dyn SandboxRuntime>>>>,
+}
+
+impl fmt::Debug for RuntimeRegistry {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let runtimes = self.runtimes.read();
+        let names: Vec<_> = runtimes.keys().cloned().collect();
+        f.debug_struct("RuntimeRegistry")
+            .field("runtimes", &names)
+            .finish()
+    }
 }
 
 impl RuntimeRegistry {
